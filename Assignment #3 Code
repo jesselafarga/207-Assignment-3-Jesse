@@ -1,0 +1,230 @@
+/*Assignment #3*/
+Libname Folder "/home/u59586996/Jesse/Epi 207/Homework #3";
+/*Import Data*/
+DATA Folder.Adult1;
+SET Folder.adult (keep = SRAge_P SRSEX RaceDOF AHeduc POVGWD_P  WRKST MARIT BMI_P BINGE12 
+AB29 AB30 AE15 PROXY rakedw0-rakedw80);
+Run;
+/*What in it?*/
+Proc Contents Data=Folder.Adult1;
+Run;
+Proc Freq data= Folder.Adult1;
+Tables SRAge_P SRSEX RaceDOF AHeduc POVGWD_P 
+WRKST MARIT BMI_P BINGE12 AB29 AB30 AE15 PROXY;
+Run;
+/*Recodeing Variables*/
+Data Folder.Adult1;
+Set folder.adult;
+/*Recode: Age(SRAge_P) */
+Age=.;
+If 18<=SRAge_P<=25 Then Age=1;
+If 26<=SRAge_P<=34 Then Age=2;
+If 35<=SRAge_P<=49 Then Age=3;
+If 50<=SRAge_P     Then Age=4;
+/*Recode: Race(RaceDOF) */
+Race=.;
+If RaceDOF=1 Then Race=1;
+If RaceDOF=6 Then Race=2;
+If RaceDOF=5 Then Race=3;
+If RaceDOF=3 Then Race=4;
+If RaceDOF=4 Then Race=5;
+If RaceDOF=2 Then Race=6;
+If RaceDOF=7 Then Race=6;
+If RaceDOF=8 Then Race=6;
+/*Recode: Poverty(POVGWD_P)*/
+povll=.;
+If POVGWD_P<1 Then povll=1;
+If 1<=POVGWD_P<2 Then povll=2;
+If 2<=POVGWD_P<4 Then povll=3;
+If POVGWD_P>=4 Then povll=4;
+/*Recode: BMI(BMI_P)*/
+BMI=.;
+If BMI_P<18.5 Then BMI=1;
+If 18.5<=BMI_P<25 Then BMI=2;
+If 25<=BMI_P<30 Then BMI=3;
+If BMI_P>=30 Then BMI=4;
+/*Recode: Education(AHeduc)*/
+educ=.;
+If AHeduc=1 Then educ=1;
+If AHeduc=2 Then educ=1;
+If AHeduc=91 Then educ=1;
+If AHeduc=3 Then educ=2;
+If AHeduc=4 Then educ=3;
+If AHeduc=5 Then educ=3;
+If AHeduc=6 Then educ=3;
+If AHeduc=7 Then educ=4;
+If AHeduc=8 Then educ=4;
+If AHeduc=9 Then educ=4;
+If AHeduc=10 Then educ=4;
+/*Recode: Bing Drink Yes No(BINGE12)*/
+binged=.;
+If BINGE12=1 Then binged=2;
+If BINGE12=2 Then binged=1;
+If BINGE12=3 Then binged=1;
+If BINGE12=4 Then binged=1;
+If BINGE12=5 Then binged=1;
+If BINGE12=6 Then binged=1; 
+/*Recode: Frequency of binge drinking (bingeF)*/
+bingeF=.;
+If BINGE12=2 Then bingeF=2;
+If BINGE12=3 Then bingeF=3;
+If BINGE12=4 Then bingeF=4;
+If BINGE12=5 Then bingeF=5;
+If BINGE12=6 Then bingeF=6; 
+/*Recode: Medications high blood pressure? (AB30) */
+hbpmed=.;
+If AB30=1 Then hbpmed=1;
+If AB30=2 Then hbpmed=2;
+
+label 
+wrkst     = "Employment Levels"
+SRSEX     = "Gender"
+bingeF    = "Frequency of binge drinking"
+binged    = "Binge drinking status" 
+educ      = "Education status"
+BMI       = "Body mass index"
+povll     = "Poverty level"
+hbpmed    = "Are you now taking any medications to control your high blood pressure?"
+AE15      = "SMOKED 100 OR MORE CIGARETTES IN ENTIRE LIFETIME";
+Run;
+
+proc format;
+value Age
+1 = "18-25" 
+2 = "26-34"
+3 = "35-49"
+4 = "50+";
+value SRSEX
+1 = "male"
+2 = "female";
+value race
+1 = "hispanic"
+2 = "non hispanic white"
+3 = "non hispanic black"
+4 = "non hispanic american indian/alaskan"
+5 = "non hispanic asian"
+6 = "non hispanic other";
+value educ
+1 = "< high school degree"
+2 = "high school graduate"
+3 = "some college"
+4 = "college or more";
+value povll
+1 = "<100% fpl"
+2 = "100-199% fpl"
+3 = "200-399% fpl"
+4 = ">=400% fpl";
+value wrkst
+1 = "full-time employment"
+2 = "part-time employment"
+3 = "employed, not at work"
+4 = "unemployed, looking for work"
+5 = "unemployed, not looking for work";
+value maritff
+1 = "married"
+2 = "otherwid/sep/div/living w/partner"
+3 = "never married";
+value bmi
+1 = "underweight"
+2 = "normal"
+3 = "overweight"
+4 = "obese";
+value binged
+1 = "yes"
+2 = "no";
+value hbpmed
+1 = "yes"
+2 = "no";
+value smoke
+1 = "ever smoking"
+2 = "no ever smoking";
+value bingeF
+1 = "no binge"
+2 = "once a year"
+3 = "less than monthly, more than once a year"
+4 = "monthly"
+5 = "less than weekly but more than monthly"
+6 = "daily or weekly";
+value wrkst
+1 = "full-time employment"
+2 = "part-time employment"
+3 = "employed, not at work"
+4 = "unemployed, looking for work"
+5 = "unemployed, not looking for work";
+value  marit
+1 = "married"
+2 = "otherwid/sep/div/living w/partner"
+3 = "never married";
+Run;
+/*Table #1Prevalence of Hypertention and Sociodemographic 
+Characteristics and Risk Factors, California, 2007*/
+Proc Freq Data=folder.adult1;
+Tables Age*binged SRSEX*binged Race*binged 
+educ*binged povll*binged wrkst*binged AE15*binged MARIT*binged bmi*binged;
+Format Age Age. binged binged. Race Race. educ educ. povll povll. 
+SRSEX SRSEX. wrkst wrkst. MARIT MARIT. ae15 smoke. bmi bmi.;
+Run;
+PROC SURVEYFREQ DATA =folder.adult1 VARMETHOD=JACKKNIFE; 
+WEIGHT rakedw0;
+REPWEIGHT rakedw1-rakedw80/JKCOEFS=1;
+TABLE Age*binged SRSEX*binged Race*binged 
+educ*binged povll*binged wrkst*binged AE15*binged MARIT*binged bmi*binged /row;
+Format Age Age. binged binged. Race Race. educ educ. povll povll. 
+SRSEX SRSEX. wrkst wrkst. MARIT MARIT. ae15 smoke. bmi bmi.;
+Run;
+
+
+/*Table #2*/
+proc surveyfreq data=folder.adult1 
+varmethod=jackknife; 
+weight rakedw0;
+repweight rakedw1-rakedw80/jkcoefs=1;
+table hbpmed binged*hbpmed  /col cl;
+Format hbpmed hbpmed. binged binged.;
+run;
+Proc Freq Data=folder.adult1;
+Tables Age*binged;
+Format Age Age. Binged binged.;
+Run;
+proc surveylogistic data=folder.adult1 
+varmethod=jackknife order=formatted;
+weight rakedw0;
+repweight rakedw1-rakedw80/jkcoefs=1;
+class Age (ref="18-25") SRSEX (ref="male") race (ref="non hispanic white") 
+educ (ref="high school graduate") povll (ref="<100% fpl") wrkst (ref="full-time employment") 
+MARIT (ref="married") bmi (ref="normal") binged (ref="no") ae15 (ref="ever smoking")/ param=reference;
+model hbpmed (event="yes")= binged Age SRSEX 
+race educ povll wrkst MARIT bmi ae15;
+format Age Age. SRSEX SRSEX. race race. educ educ. 
+povll povll. wrkst wrkst. MARIT MARIT.
+bmi bmi. binged binged. ae15 smoke. bingeF bingeF. 
+hbpmed hbpmed.;
+run;
+
+/*Table #3*/
+proc surveyfreq data=folder.adult1 
+varmethod=jackknife; 
+weight rakedw0;
+repweight rakedw1-rakedw80/jkcoefs=1;
+table bingeF bingeF*hbpmed  /col cl;
+Format bingeF bingeF. hbpmed hbpmed.;
+run;
+
+proc surveylogistic data=folder.adult1 
+varmethod=jackknife order=formatted;
+weight rakedw0;
+repweight rakedw1-rakedw80/jkcoefs=1;
+class Age (ref="18-25") SRSEX (ref="male") race (ref="non hispanic white") 
+educ (ref="high school graduate") povll (ref="<100% fpl") wrkst (ref="full-time employment") 
+MARIT (ref="married") bmi (ref="normal") ae15 (ref="ever smoking") bingeF (ref="once a year")/ param=reference;
+model hbpmed (event="yes") = bingeF Age SRSEX race educ povll wrkst MARIT bmi ae15;
+format Age Age. SRSEX SRSEX. race race. 
+educ educ. povll povll. wrkst wrkst. MARIT MARIT.
+bmi bmi. binged binged. ae15 smoke. bingeF bingeF. 
+hbpmed hbpmed.;
+run;
+
+
+
+
+				   
